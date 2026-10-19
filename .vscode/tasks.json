@@ -1,0 +1,5 @@
+{"version":"2.0.0","tasks":[
+  {"label":"Test","type":"shell","command":"powershell -ExecutionPolicy Bypass -File scripts/maven.ps1 test","group":"test","problemMatcher":[]},
+  {"label":"Run application","type":"shell","command":"powershell -ExecutionPolicy Bypass -File scripts/maven.ps1 javafx:run","problemMatcher":[]},
+  {"label":"Build","type":"shell","command":"powershell -ExecutionPolicy Bypass -File scripts/maven.ps1 package","group":"build","problemMatcher":[]}
+]}
