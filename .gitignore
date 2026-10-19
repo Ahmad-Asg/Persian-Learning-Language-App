@@ -1,0 +1,12 @@
+.tools/
+target/
+data/
+*.db
+*.db-shm
+*.db-wal
+config/local.properties
+tmp/
+.idea/
+.classpath
+.project
+.settings/
