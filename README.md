@@ -1,7 +1,3 @@
-# Persian Learning Studio
-
-Create Persian lesson chapters with Urdu explanations and glossary words.
-
 ## Software to install (Windows)
 
 - [Git for Windows](https://git-scm.com/downloads/win)
