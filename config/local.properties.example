@@ -1,0 +1,4 @@
+# Copy to local.properties, which is ignored by Git. Values are for the local XAMPP MariaDB server.
+db.url=jdbc:mariadb://127.0.0.1:3306/persian_learning?connectTimeout=5000
+db.user=persian_app
+db.password=REPLACE_WITH_LOCAL_PASSWORD
