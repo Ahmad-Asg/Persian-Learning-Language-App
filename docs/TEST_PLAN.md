@@ -12,6 +12,7 @@ Start XAMPP **MySQL** first. Then run `powershell -ExecutionPolicy Bypass -File 
 | FR-CS-04,07; BR-02,06 | ContentServiceTest: exact Persian/Urdu/mixed Unicode, edit/reopen, empty required text rejection, deliberate removal, completeness, missing/unconfigured/wrong-chapter association |
 | FR-GL-01–06; BR-03–04,06 | GlossaryServiceTest: add/view/edit/reopen, missing word/meaning, cancelled/confirmed deletion, cross-chapter rejection, duplicate allowance and missing records |
 | NFR-RL-01–03 | DatabaseTest plus reopen tests: InnoDB FK enforcement, transaction rollback and non-destructive repeated initialization |
+| Four-use-case integration | LearningStudioFacadeTest: create, configure, write, add glossary, reopen, validate, remove and delete through the same UI-facing API |
 | NFR-US-01–06 | UI smoke and manual checklist below: layout, bilingual labels, RTL, validation feedback and confirmation dialogs |
 | NFR-PF-01–02 | Measure on laboratory hardware with representative classroom data; not proven by unit tests |
 
