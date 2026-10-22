@@ -18,7 +18,7 @@ public final class ContentScreen {
         card.getChildren().addAll(preview,Ui.row(
             Ui.button("Edit content · متن لکھیں",() -> Ui.guard(feedback,() -> open(owner,chapter,type,studio,refresh))),
             Ui.button("Remove content · متن حذف",() -> {
-                if(Ui.confirm(owner,"Remove this section's saved text? The chapter will become incomplete.\nاس جزو کا متن حذف کریں؟ باب نامکمل ہو جائے گا۔"))
+                if(Ui.confirm(owner,"Remove this section's saved text? The chapter will become incomplete.\nاس جزو کا متن حذف کریں؟ باب نامکمل ہو جائے گا۔","Remove text · متن حذف"))
                     Ui.run(feedback,() -> { studio.removeContent(chapter,type); refresh.run(); });
             })));
         return card;
@@ -26,8 +26,8 @@ public final class ContentScreen {
     public static void open(Node owner,long chapter,ComponentType type,LearningStudioFacade studio,Runnable refresh) {
         TextArea editor=new TextArea(studio.content(chapter,type)); editor.setWrapText(true); editor.setPrefRowCount(15); Ui.leftEntry(editor);
         Label feedback=Ui.message();
-        VBox form=Ui.box(Ui.title(type.toString()),new Label("Instructional text · تدریسی متن"),editor,
-            new Label("Save needs text. Use Remove content on the chapter screen to clear it.\nمحفوظ کرنے کے لیے متن لکھیں۔ متن حذف کرنے کے لیے باب کے صفحے پر جائیں۔"),feedback);
+        VBox form=Ui.box(Ui.title(type.toString()),new Label("Text for this section · اس جزو کا متن"),editor,
+            new Label("Write your lesson text here. Saving an empty section is not allowed.\nیہاں سبق کا متن لکھیں۔ خالی متن محفوظ نہیں ہو سکتا۔"),feedback);
         form.setPrefWidth(720); VBox.setVgrow(editor,javafx.scene.layout.Priority.ALWAYS);
         Ui.saveDialog(owner,"Content editor · متن کی تدوین",form,feedback,() -> { studio.saveContent(chapter,type,editor.getText()); refresh.run(); });
     }
