@@ -8,6 +8,16 @@ import javafx.scene.layout.VBox;
 
 public final class GlossaryScreen {
     private GlossaryScreen() { }
+    static VBox card(Node owner, long chapter, int position, LearningStudioFacade studio,
+                     Runnable refresh, Label feedback) {
+        VBox card=Ui.sectionCard("Glossary · فرہنگ",position);
+        Label words=new Label(studio.glossary(chapter).stream().map(GlossaryEntry::toString)
+            .reduce((a,b) -> a+"\n"+b).orElse("No entries · کوئی اندراج نہیں"));
+        words.setWrapText(true); Ui.rtl(words);
+        card.getChildren().addAll(words,Ui.button("Manage glossary · فرہنگ کی تدوین",
+            () -> Ui.guard(feedback,() -> open(owner,chapter,studio,refresh))));
+        return card;
+    }
     public static void open(Node owner,long chapter,LearningStudioFacade studio,Runnable changed) {
         ListView<GlossaryEntry> entries=new ListView<>(); Ui.rtl(entries); entries.setPrefHeight(300);
         entries.setPlaceholder(new Label("No words yet · ابھی کوئی لفظ نہیں"));
