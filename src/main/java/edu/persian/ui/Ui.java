@@ -19,6 +19,12 @@ final class Ui {
         Button button = button(text, action); button.getStyleClass().add("danger-button"); return button;
     }
     static Label title(String text) { Label l = new Label(text); l.getStyleClass().add("heading"); l.setWrapText(true); return l; }
+    static VBox sectionCard(String text, int position) {
+        Label index = new Label(String.format("%02d", position)); index.getStyleClass().add("section-index");
+        Label heading = title(text); heading.getStyleClass().add("section-title");
+        return card(row(index, heading));
+    }
+    private static VBox card(Node heading) { VBox card=box(heading); card.getStyleClass().add("card"); return card; }
     static Label message() { Label l=new Label(); l.setWrapText(true); l.getStyleClass().add("message"); return l; }
     static VBox box(Node... children) { VBox box=new VBox(14,children); box.setPadding(new Insets(22)); return box; }
     static HBox row(Node... children) { HBox row=new HBox(10,children); row.setAlignment(Pos.CENTER_LEFT); return row; }
