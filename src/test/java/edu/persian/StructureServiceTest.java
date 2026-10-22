@@ -29,7 +29,7 @@ class StructureServiceTest extends ServiceTestBase {
     }
     @Test void failedDatabaseConfigurationRollsBack() {
         long id=chapter(); structure.save(id,List.of(ComponentType.READING));
-        assertThrows(RuntimeException.class,() -> new edu.persian.repository.ComponentRepository(db).configure(id,Arrays.asList(ComponentType.GRAMMAR,null)));
+        assertThrows(RuntimeException.class,() -> new edu.persian.repository.StructureRepository(db).configure(id,Arrays.asList(ComponentType.GRAMMAR,null)));
         assertEquals(List.of(ComponentType.READING),structure.get(id));
     }
 }
