@@ -1,13 +1,13 @@
 package edu.persian.service;
 
 import edu.persian.model.ComponentType;
-import edu.persian.repository.ComponentRepository;
+import edu.persian.repository.StructureRepository;
 import java.util.*;
 
 public final class StructureService {
     private final ChapterService chapters;
-    private final ComponentRepository repository;
-    public StructureService(ChapterService chapters, ComponentRepository repository) { this.chapters=chapters; this.repository=repository; }
+    private final StructureRepository repository;
+    public StructureService(ChapterService chapters, StructureRepository repository) { this.chapters=chapters; this.repository=repository; }
     public List<ComponentType> get(long chapter) { chapters.get(chapter); return repository.selected(chapter); }
     public void save(long chapter, List<ComponentType> types) {
         chapters.get(chapter);
