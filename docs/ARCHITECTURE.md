@@ -2,7 +2,7 @@
 
 JavaFX UI → `LearningStudioFacade` → use-case services → JDBC repositories → local XAMPP MariaDB server.
 
-Immutable model records carry data. Services enforce validation and association rules without JavaFX. Repositories contain prepared SQL. `App` starts the application and asks `LearningStudioFacade.create(Database)` to assemble one set of collaborating services over a shared database. All four screen classes call this facade rather than knowing individual services; `Ui` supplies common dialogs and feedback. The facade delegates operations and does not duplicate validation or SQL.
+Immutable model records carry data. Each use case has its own JavaFX GUI class, service for business logic (BLL), and repository for data access (DAL). Services enforce validation and association rules without JavaFX. Repositories contain prepared SQL. `App` starts the application and asks `LearningStudioFacade.create(Database)` to assemble the collaborators over a shared database. All four screen classes call this facade rather than knowing individual services; `Ui` supplies common dialogs and feedback. The facade delegates operations and does not duplicate validation or SQL.
 
 See [GRASP and Facade design](GRASP_AND_FACADE.md) for the specific responsibilities and limits of each pattern claim.
 
@@ -14,7 +14,7 @@ See [GRASP and Facade design](GRASP_AND_FACADE.md) for the specific responsibili
 | components | composite key `(chapter_id,type)`; parent FK cascades | optional ordered position, exact text; unique `(chapter_id,position)` |
 | glossary | generated integer primary key; parent FK cascades | required Persian word and Urdu meaning |
 
-Instructional content is stored in its component row to avoid a redundant one-to-one table. NULL position means deselected; content is retained. Multiple NULL positions are legal in MariaDB unique indexes. Positions of active rows are contiguous starting at zero and established transactionally. Type values are constrained in SQL. Glossary has a parent index for chapter-specific reads.
+Instructional content is stored in its component row to avoid a redundant one-to-one table. `StructureRepository` owns section-selection and ordering SQL; `ContentRepository` owns text read/write SQL. Both work with the shared `components` table. NULL position means deselected; content is retained. Multiple NULL positions are legal in MariaDB unique indexes. Positions of active rows are contiguous starting at zero and established transactionally. Type values are constrained in SQL. Glossary has a parent index for chapter-specific reads.
 
 Connections are short-lived. InnoDB enforces foreign keys, and the client sets a five-second connection timeout. Schema creation is idempotent and does not reset existing data. Inserts use generated keys from their statement; reordering first clears active positions then upserts selected types in one transaction. A single chapter DELETE cascades through both child tables, including inactive content. Transactions roll back on SQL or runtime failure. All tables use `utf8mb4` with binary collation to preserve Persian and Urdu text exactly.
 
