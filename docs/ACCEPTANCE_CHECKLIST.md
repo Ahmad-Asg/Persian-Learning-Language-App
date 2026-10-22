@@ -4,13 +4,13 @@ Implementation is limited to the four Iteration 1 use cases.
 
 - [x] UC-01 implemented: create/list/view/rename, generated IDs, required titles, confirmed deletion with cascade.
 - [x] UC-02 implemented: seven types, selection/order, chapter independence, persistent configuration, retained deselected text.
-- [x] UC-03 implemented: ordered preview, RTL editing, nonblank save, explicit removal, completeness and Unicode preservation.
+- [x] UC-03 implemented: ordered RTL preview, left-starting editor as later requested, nonblank save, explicit removal, completeness and Unicode preservation.
 - [x] UC-04 implemented: chapter-specific glossary CRUD, required fields and confirmed deletion.
 - [x] Shared MariaDB layer, prepared SQL, InnoDB foreign keys, transactions and no production seed data.
 - [x] JUnit 5 test source for all use cases, no mocking framework.
 - [x] README, requirements, architecture, team ownership and test documentation.
 - [x] No later-iteration functionality.
-- [x] Maven build and full suite executed successfully against MariaDB: 34 tests, zero failures/errors/skips.
+- [x] Maven build and full suite executed successfully against MariaDB: 35 tests, zero failures/errors/skips (latest run: 22 October 2026).
 - [x] JavaFX startup and real dialog smoke exercise passed against MariaDB.
 - [ ] Full manual acceptance exercise completed by team on target lab machines.
 - [ ] Urdu/Persian language, keyboard and mixed-direction rendering signed off by an Urdu-speaking reviewer.
@@ -36,3 +36,10 @@ The user replaced the local persistence choice with XAMPP MariaDB. The existing 
 - `scripts/maven.ps1 package`: passed against running MariaDB, including all 34 JUnit cases (A: 10, B: 5, C: 8, D: 8, shared database: 3).
 - `scripts/ui-smoke.ps1`: passed in an isolated MariaDB schema, including real `App.start` startup and all four use-case dialogs.
 - A read-only `Database.local()` connection using the saved application account succeeded; the production chapter table was empty.
+
+## GRASP and Facade change — 22 October 2026
+
+- The JavaFX screens now use `LearningStudioFacade` as their only use-case entry point. The facade assembles and delegates to focused services; services retain validation and repositories retain SQL.
+- `LearningStudioFacadeTest` covers all four use cases through the facade and reopening persisted data.
+- `scripts/maven.ps1 package` passed with 35 JUnit cases, and `scripts/ui-smoke.ps1` passed with the facade-wired real UI.
+- The initial test attempt failed because XAMPP MariaDB was stopped; the rerun passed after starting the existing local server.
