@@ -41,11 +41,16 @@ final class Ui {
         try { action.run(); }
         catch (ValidationException | DataException e) { feedback.setText(e.getMessage()); }
     }
-    static boolean confirm(Node owner, String text) {
-        Alert alert=new Alert(Alert.AlertType.CONFIRMATION,text,ButtonType.YES,ButtonType.CANCEL);
-        alert.initOwner(owner.getScene().getWindow()); alert.setTitle("Confirm · تصدیق"); alert.setHeaderText("Please confirm · براہ کرم تصدیق کریں");
-        alert.getButtonTypes().setAll(new ButtonType("Confirm · تصدیق",ButtonBar.ButtonData.YES),new ButtonType("Cancel · منسوخ",ButtonBar.ButtonData.CANCEL_CLOSE));
-        return alert.showAndWait().map(b -> b.getButtonData()==ButtonBar.ButtonData.YES).orElse(false);
+    static boolean confirm(Node owner, String text, String action) {
+        ButtonType actionType=new ButtonType(action,ButtonBar.ButtonData.YES);
+        Alert alert=new Alert(Alert.AlertType.CONFIRMATION);
+        alert.getButtonTypes().setAll(actionType,new ButtonType("Cancel · منسوخ",ButtonBar.ButtonData.CANCEL_CLOSE));
+        alert.initOwner(owner.getScene().getWindow()); alert.setTitle(action); alert.setHeaderText(null);
+        Label warning=new Label(text); warning.setWrapText(true); warning.setPrefWidth(500); warning.setMinHeight(92);
+        alert.getDialogPane().setContent(warning); alert.getDialogPane().setMinWidth(600);
+        alert.getDialogPane().getStylesheets().add(Ui.class.getResource("/styles.css").toExternalForm());
+        alert.getDialogPane().lookupButton(actionType).getStyleClass().add("danger-button");
+        return alert.showAndWait().map(b -> b==actionType).orElse(false);
     }
     static Dialog<Void> dialog(Node owner, String title, Node content) {
         Dialog<Void> dialog=new Dialog<>(); dialog.initOwner(owner.getScene().getWindow()); dialog.setTitle(title);
@@ -60,6 +65,7 @@ final class Ui {
         ButtonType saveType=new ButtonType("Save · محفوظ کریں",ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().setAll(saveType,new ButtonType("Cancel · منسوخ",ButtonBar.ButtonData.CANCEL_CLOSE));
         sizeButtons(dialog);
+        dialog.getDialogPane().lookupButton(saveType).getStyleClass().add("primary-button");
         dialog.getDialogPane().lookupButton(saveType).addEventFilter(javafx.event.ActionEvent.ACTION,e -> {
             if (!run(feedback,save)) e.consume();
         });
