@@ -27,12 +27,12 @@ public final class GlossaryScreen {
         Button edit=Ui.button("Edit · ترمیم",() -> edit(entries,chapter,entries.getSelectionModel().getSelectedItem(),studio,refresh));
         Button delete=Ui.button("Delete · حذف",() -> {
             GlossaryEntry entry=entries.getSelectionModel().getSelectedItem();
-            if(entry!=null && Ui.confirm(entries,"Delete this word? · یہ لفظ حذف کریں؟\n"+entry.word()))
+            if(entry!=null && Ui.confirm(entries,"Delete this word? · یہ لفظ حذف کریں؟\n"+entry.word(),"Delete word · لفظ حذف"))
                 Ui.run(feedback,() -> { studio.deleteWord(chapter,entry.id(),true); refresh.run(); });
         });
         edit.disableProperty().bind(entries.getSelectionModel().selectedItemProperty().isNull()); delete.disableProperty().bind(edit.disableProperty());
-        VBox form=Ui.box(Ui.title("Chapter glossary · باب کی فرہنگ"),new Label("Persian word — Urdu meaning · فارسی لفظ — اردو معنی"),entries,
-                Ui.row(Ui.button("Add word · لفظ شامل کریں",() -> edit(entries,chapter,null,studio,refresh)),edit,delete),feedback);
+        VBox form=Ui.box(Ui.title("Chapter glossary · باب کی فرہنگ"),new Label("Select a word to edit it, or add a new one. · لفظ منتخب کریں یا نیا لفظ شامل کریں۔"),entries,
+                Ui.row(Ui.primaryButton("Add word · لفظ شامل کریں",() -> edit(entries,chapter,null,studio,refresh)),edit,delete),feedback);
         form.setPrefWidth(730); Ui.dialog(owner,"Glossary · فرہنگ",form).showAndWait();
     }
     private static void edit(Node owner,long chapter,GlossaryEntry entry,LearningStudioFacade studio,Runnable refresh) {
