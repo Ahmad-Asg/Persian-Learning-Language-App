@@ -4,9 +4,10 @@ import edu.persian.model.Chapter;
 import edu.persian.model.ComponentType;
 import edu.persian.model.GlossaryEntry;
 import edu.persian.repository.ChapterRepository;
-import edu.persian.repository.ComponentRepository;
+import edu.persian.repository.ContentRepository;
 import edu.persian.repository.Database;
 import edu.persian.repository.GlossaryRepository;
+import edu.persian.repository.StructureRepository;
 import edu.persian.service.ChapterService;
 import edu.persian.service.ContentService;
 import edu.persian.service.GlossaryService;
@@ -33,10 +34,9 @@ public final class LearningStudioFacade {
     public static LearningStudioFacade create(Database database) {
         Objects.requireNonNull(database, "database");
         ChapterService chapters = new ChapterService(new ChapterRepository(database));
-        ComponentRepository components = new ComponentRepository(database);
-        StructureService structure = new StructureService(chapters, components);
+        StructureService structure = new StructureService(chapters, new StructureRepository(database));
         GlossaryService glossary = new GlossaryService(chapters, new GlossaryRepository(database));
-        ContentService content = new ContentService(components, structure, glossary);
+        ContentService content = new ContentService(new ContentRepository(database), structure, glossary);
         return new LearningStudioFacade(chapters, structure, content, glossary);
     }
 
