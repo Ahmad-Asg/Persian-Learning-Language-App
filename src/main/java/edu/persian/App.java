@@ -1,7 +1,7 @@
 package edu.persian;
 
-import edu.persian.repository.*;
-import edu.persian.service.*;
+import edu.persian.application.LearningStudioFacade;
+import edu.persian.repository.Database;
 import edu.persian.ui.ChapterScreen;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -11,13 +11,8 @@ import javafx.stage.Stage;
 public final class App extends Application {
     @Override public void start(Stage stage) {
         try {
-            Database db = Database.local();
-            ChapterService chapters = new ChapterService(new ChapterRepository(db));
-            ComponentRepository components = new ComponentRepository(db);
-            StructureService structure = new StructureService(chapters,components);
-            GlossaryService glossary = new GlossaryService(chapters,new GlossaryRepository(db));
-            ContentService content = new ContentService(components,structure,glossary);
-            Scene scene = new Scene(new ChapterScreen(chapters,structure,content,glossary),1120,760);
+            LearningStudioFacade studio = LearningStudioFacade.create(Database.local());
+            Scene scene = new Scene(new ChapterScreen(studio),1120,760);
             scene.getStylesheets().add(App.class.getResource("/styles.css").toExternalForm());
             stage.setTitle("Persian Learning Studio · فارسی زبان");
             stage.setMinWidth(900); stage.setMinHeight(620); stage.setScene(scene); stage.show();
