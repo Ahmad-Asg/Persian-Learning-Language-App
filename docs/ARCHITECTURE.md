@@ -1,8 +1,10 @@
 # Architecture
 
-JavaFX UI → use-case services → JDBC repositories → local XAMPP MariaDB server.
+JavaFX UI → `LearningStudioFacade` → use-case services → JDBC repositories → local XAMPP MariaDB server.
 
-Immutable model records carry data. Services enforce validation and association rules without JavaFX. Repositories contain prepared SQL. `App` is the composition root; it creates a single set of services over a shared `Database`. Four screen classes own their use cases; `Ui` supplies common dialogs and feedback.
+Immutable model records carry data. Services enforce validation and association rules without JavaFX. Repositories contain prepared SQL. `App` starts the application and asks `LearningStudioFacade.create(Database)` to assemble one set of collaborating services over a shared database. All four screen classes call this facade rather than knowing individual services; `Ui` supplies common dialogs and feedback. The facade delegates operations and does not duplicate validation or SQL.
+
+See [GRASP and Facade design](GRASP_AND_FACADE.md) for the specific responsibilities and limits of each pattern claim.
 
 ## Schema
 
