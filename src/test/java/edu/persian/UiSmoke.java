@@ -1,6 +1,7 @@
 package edu.persian;
 
 import edu.persian.application.LearningStudioFacade;
+import edu.persian.model.Chapter;
 import edu.persian.model.ComponentType;
 import edu.persian.repository.Database;
 import edu.persian.ui.ChapterScreen;
@@ -48,10 +49,17 @@ public final class UiSmoke {
         LearningStudioFacade studio=LearningStudioFacade.create(new Database(url,user,password));
         ChapterScreen root=new ChapterScreen(studio); Scene scene=new Scene(root,1120,760);
         scene.getStylesheets().add(App.class.getResource("/styles.css").toExternalForm()); Stage stage=new Stage(); stage.setScene(scene); stage.show();
+        snapshot(root,"welcome.png");
         nextDialog(form -> {
             click(form,"Save"); require(form.getScene().getWindow().isShowing(),"Invalid title closed dialog");
             ((TextField)find(form,TextField.class)).setText("درس ۱ — سلام اور تعارف"); click(form,"Save");
         }); click(root,"+ New chapter"); require(studio.listChapters().size()==1,"Chapter not created"); long id=studio.listChapters().getFirst().id();
+        snapshot(root,"empty-chapter.png");
+        TextField search=(TextField)find(root,TextField.class);
+        @SuppressWarnings("unchecked") ListView<Chapter> chapters=(ListView<Chapter>)find(root,ListView.class);
+        search.setText("not a chapter"); require(chapters.getItems().isEmpty(),"Chapter search did not filter");
+        search.clear(); require(chapters.getItems().size()==1,"Clearing chapter search did not restore the list");
+        chapters.getSelectionModel().selectFirst();
         nextDialog(form -> {
             @SuppressWarnings("unchecked") ComboBox<ComponentType> combo=(ComboBox<ComponentType>)find(form,ComboBox.class);
             combo.setValue(ComponentType.DIALOGUE); click(form,"Add section"); combo.setValue(ComponentType.GLOSSARY); click(form,"Add section");
@@ -67,7 +75,7 @@ public final class UiSmoke {
         }); click(root,"Glossary"); require(studio.glossary(id).size()==1,"Glossary not saved"); require(studio.isComplete(id),"Completeness not updated");
         snapshot(root,"chapter.png"); stage.setWidth(900); stage.setHeight(620); root.resize(900,620); snapshot(root,"compact.png");
         nextDialog(form -> click(form,"Cancel")); click(root,"Delete chapter"); require(studio.listChapters().size()==1,"Cancelled deletion removed chapter");
-        nextDialog(form -> click(form,"Confirm")); click(root,"Delete chapter"); require(studio.listChapters().isEmpty(),"Confirmed deletion failed");
+        nextDialog(form -> { snapshot(form,"confirm-delete.png"); click(form,"Delete chapter"); }); click(root,"Delete chapter"); require(studio.listChapters().isEmpty(),"Confirmed deletion failed");
         stage.close(); Stage actual=new Stage(); new App().start(actual); require(actual.isShowing(),"App did not start"); actual.close();
     }
     private static void nextDialog(Consumer<Parent> action) {
