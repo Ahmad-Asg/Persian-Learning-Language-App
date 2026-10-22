@@ -33,10 +33,9 @@ abstract class ServiceTestBase {
     void reopen() {
         db=new Database(baseUrl + schema, testUser, testPassword);
         chapters=new ChapterService(new ChapterRepository(db));
-        ComponentRepository components=new ComponentRepository(db);
-        structure=new StructureService(chapters,components);
+        structure=new StructureService(chapters,new StructureRepository(db));
         glossary=new GlossaryService(chapters,new GlossaryRepository(db));
-        content=new ContentService(components,structure,glossary);
+        content=new ContentService(new ContentRepository(db),structure,glossary);
     }
     long chapter() { return chapters.create("درس ۱ — سلام").id(); }
 }
