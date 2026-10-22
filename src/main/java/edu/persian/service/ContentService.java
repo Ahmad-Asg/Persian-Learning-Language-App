@@ -1,14 +1,14 @@
 package edu.persian.service;
 
 import edu.persian.model.ComponentType;
-import edu.persian.repository.ComponentRepository;
+import edu.persian.repository.ContentRepository;
 import java.util.List;
 
 public final class ContentService {
-    private final ComponentRepository repository;
+    private final ContentRepository repository;
     private final StructureService structure;
     private final GlossaryService glossary;
-    public ContentService(ComponentRepository repository, StructureService structure, GlossaryService glossary) {
+    public ContentService(ContentRepository repository, StructureService structure, GlossaryService glossary) {
         this.repository=repository; this.structure=structure; this.glossary=glossary;
     }
     private void editable(long chapter, ComponentType type) {
