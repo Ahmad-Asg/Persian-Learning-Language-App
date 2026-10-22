@@ -92,23 +92,9 @@ public final class ChapterScreen extends BorderPane {
         }
         int position=0;
         for(ComponentType type:types) {
-            Label index=new Label(String.format("%02d",++position)); index.getStyleClass().add("section-index");
-            Label sectionTitle=Ui.title(type.toString()); sectionTitle.getStyleClass().add("section-title");
-            HBox cardHeading=new HBox(12,index,sectionTitle); cardHeading.setAlignment(Pos.CENTER_LEFT);
-            VBox card=Ui.box(cardHeading); card.getStyleClass().add("card");
-            if(type==ComponentType.GLOSSARY) {
-                Label words=new Label(studio.glossary(id).stream().map(GlossaryEntry::toString).reduce((a,b) -> a+"\n"+b).orElse("No entries · کوئی اندراج نہیں")); words.setWrapText(true); Ui.rtl(words);
-                card.getChildren().addAll(words,Ui.button("Manage glossary · فرہنگ کی تدوین",() -> Ui.guard(feedback,() -> GlossaryScreen.open(this,id,studio,this::render))));
-            } else {
-                String saved=studio.content(id,type);
-                Label preview=new Label(saved.isEmpty() ? "No content yet · ابھی متن موجود نہیں" : saved); preview.setWrapText(true); preview.setMaxWidth(Double.MAX_VALUE); Ui.rtl(preview); preview.getStyleClass().add(saved.isEmpty() ? "empty-preview" : "content-preview");
-                card.getChildren().addAll(preview,Ui.row(Ui.button("Edit content · متن لکھیں",() -> Ui.guard(feedback,() -> ContentScreen.open(this,id,type,studio,this::render))),
-                    Ui.button("Remove content · متن حذف",() -> {
-                        if(Ui.confirm(this,"Remove this section's saved text? The chapter will become incomplete.\nاس جزو کا متن حذف کریں؟ باب نامکمل ہو جائے گا۔"))
-                            Ui.run(feedback,() -> { studio.removeContent(id,type); render(); });
-                    })));
-            }
-            detail.getChildren().add(card);
+            detail.getChildren().add(type==ComponentType.GLOSSARY
+                ? GlossaryScreen.card(this,id,++position,studio,this::render,feedback)
+                : ContentScreen.card(this,id,type,++position,studio,this::render,feedback));
         }
     }
 }
