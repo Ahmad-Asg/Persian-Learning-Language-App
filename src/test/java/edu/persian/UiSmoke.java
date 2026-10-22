@@ -1,8 +1,8 @@
 package edu.persian;
 
+import edu.persian.application.LearningStudioFacade;
 import edu.persian.model.ComponentType;
-import edu.persian.repository.*;
-import edu.persian.service.*;
+import edu.persian.repository.Database;
 import edu.persian.ui.ChapterScreen;
 import javafx.application.Platform;
 import javafx.scene.*;
@@ -45,31 +45,29 @@ public final class UiSmoke {
         System.out.println("UI SMOKE PASSED: chapter creation, structure, content, glossary, cancellation, deletion and App startup.");
     }
     private static void exercise(String url,String user,String password) throws Exception {
-        Database db=new Database(url,user,password); ChapterService chapters=new ChapterService(new ChapterRepository(db));
-        ComponentRepository repo=new ComponentRepository(db); StructureService structure=new StructureService(chapters,repo);
-        GlossaryService glossary=new GlossaryService(chapters,new GlossaryRepository(db)); ContentService content=new ContentService(repo,structure,glossary);
-        ChapterScreen root=new ChapterScreen(chapters,structure,content,glossary); Scene scene=new Scene(root,1120,760);
+        LearningStudioFacade studio=LearningStudioFacade.create(new Database(url,user,password));
+        ChapterScreen root=new ChapterScreen(studio); Scene scene=new Scene(root,1120,760);
         scene.getStylesheets().add(App.class.getResource("/styles.css").toExternalForm()); Stage stage=new Stage(); stage.setScene(scene); stage.show();
         nextDialog(form -> {
             click(form,"Save"); require(form.getScene().getWindow().isShowing(),"Invalid title closed dialog");
             ((TextField)find(form,TextField.class)).setText("درس ۱ — سلام اور تعارف"); click(form,"Save");
-        }); click(root,"+ New chapter"); require(chapters.list().size()==1,"Chapter not created"); long id=chapters.list().getFirst().id();
+        }); click(root,"+ New chapter"); require(studio.listChapters().size()==1,"Chapter not created"); long id=studio.listChapters().getFirst().id();
         nextDialog(form -> {
             @SuppressWarnings("unchecked") ComboBox<ComponentType> combo=(ComboBox<ComponentType>)find(form,ComboBox.class);
             combo.setValue(ComponentType.DIALOGUE); click(form,"Add section"); combo.setValue(ComponentType.GLOSSARY); click(form,"Add section");
             snapshot(form,"structure.png"); click(form,"Save");
-        }); click(root,"Structure"); require(structure.get(id).size()==2,"Structure not saved");
+        }); click(root,"Structure"); require(studio.structure(id).size()==2,"Structure not saved");
         nextDialog(form -> {
             ((TextArea)find(form,TextArea.class)).setText("سلام! حال شما چطور است؟\nآپ کا کیا حال ہے؟\nLesson 2: ۱۲۳ (45) — می‌روم۔"); snapshot(form,"content.png"); click(form,"Save");
-        }); click(root,"Edit content"); require(content.get(id,ComponentType.DIALOGUE).contains("۱۲۳"),"Content not saved");
+        }); click(root,"Edit content"); require(studio.content(id,ComponentType.DIALOGUE).contains("۱۲۳"),"Content not saved");
         nextDialog(form -> {
             nextDialog(entry -> {
                 ((TextField)find(entry,TextField.class)).setText("دوست"); ((TextArea)find(entry,TextArea.class)).setText("دوست، ساتھی"); click(entry,"Save");
             }); click(form,"Add word"); snapshot(form,"glossary.png"); click(form,"Close");
-        }); click(root,"Glossary"); require(glossary.list(id).size()==1,"Glossary not saved"); require(content.complete(id),"Completeness not updated");
+        }); click(root,"Glossary"); require(studio.glossary(id).size()==1,"Glossary not saved"); require(studio.isComplete(id),"Completeness not updated");
         snapshot(root,"chapter.png"); stage.setWidth(900); stage.setHeight(620); root.resize(900,620); snapshot(root,"compact.png");
-        nextDialog(form -> click(form,"Cancel")); click(root,"Delete chapter"); require(chapters.list().size()==1,"Cancelled deletion removed chapter");
-        nextDialog(form -> click(form,"Confirm")); click(root,"Delete chapter"); require(chapters.list().isEmpty(),"Confirmed deletion failed");
+        nextDialog(form -> click(form,"Cancel")); click(root,"Delete chapter"); require(studio.listChapters().size()==1,"Cancelled deletion removed chapter");
+        nextDialog(form -> click(form,"Confirm")); click(root,"Delete chapter"); require(studio.listChapters().isEmpty(),"Confirmed deletion failed");
         stage.close(); Stage actual=new Stage(); new App().start(actual); require(actual.isShowing(),"App did not start"); actual.close();
     }
     private static void nextDialog(Consumer<Parent> action) {
